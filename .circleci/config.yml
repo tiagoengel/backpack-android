@@ -93,7 +93,7 @@ jobs:
       - run:
           name: "Build test apk"
           command: |
-            npm run build
+            # npm run build  Is this needed?
             ./gradlew :app:assembleDebug :Backpack:assembleDebugAndroidTest -PdisablePreDex
       - run: *gcloud_tests
 
@@ -107,6 +107,6 @@ jobs:
       - run: 
           name: "Build test apk"
           command: |
-            npm run build
+            # npm run build Is this needed?
             ./gradlew :app:assembleDebug :app:assembleDebugAndroidTest -PdisablePreDex
       - run: *gcloud_tests
