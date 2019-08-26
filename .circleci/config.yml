@@ -20,20 +20,21 @@ jobs:
       - run:
           name: Build debug APK and release APK
           command: |
-            echo $SECRET
-      # - run:
-      #     name: Store Google Service Account
-      #     command: echo $GCLOUD_SERVICE_KEY > ${HOME}/gcloud-service-key.json
-      # - run:
-      #     name: Authorize gcloud and set config defaults
-      #     command: |
-      #       sudo gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
-      #       sudo gcloud --quiet config set project ${GOOGLE_PROJECT_ID}
-      # - run:
-      #     name: Test with Firebase Test Lab
-      #     command: |
-      #       TEST_METHOD=connected ./scripts/ci-tests.sh
-      #       TEST_METHOD=screenshot ./scripts/ci-tests.sh
+            npm run build
+            ./gradlew :app:assembleDebug :app:assembleDebugAndroidTest :Backpack:assembleDebugAndroidTest check -PdisablePreDex
+      - run:
+          name: Store Google Service Account
+          command: echo $GCLOUD_SERVICE_KEY | base64 --decode > ${HOME}/gcloud-service-key.json
+      - run:
+          name: Authorize gcloud and set config defaults
+          command: |
+            sudo gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
+            sudo gcloud --quiet config set project ${GOOGLE_PROJECT_ID}
+      - run:
+          name: Test with Firebase Test Lab
+          command: |
+            TEST_METHOD=connected ./scripts/ci-tests.sh
+            TEST_METHOD=screenshot ./scripts/ci-tests.sh
       # - run:
       #     name: Install gsutil dependency and copy test results data
       #     command: |
