@@ -9,7 +9,7 @@ aliases:
       
   - &attach_workspace
     attach_workspace:
-      at: ~/code
+        at: ~/code
 
   - &gcloud_login
     name: Gcloud login
