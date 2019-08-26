@@ -108,5 +108,6 @@ jobs:
           name: "Build test apk"
           command: |
             # npm run build Is this needed?
+            pip install Pillow
             ./gradlew :app:assembleDebug :app:assembleDebugAndroidTest -PdisablePreDex
       - run: *gcloud_tests
