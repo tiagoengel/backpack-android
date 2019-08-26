@@ -6,26 +6,17 @@ aliases:
     environment:
       JVM_OPTS: -Xmx3200m
 
-      
   - &attach_workspace
     attach_workspace:
         at: ~/code
 
-  - &gcloud_login
-    name: Gcloud login
+  - &gcloud_tests
+    name: Gcloud Tests
     command: |
       echo $GCLOUD_SERVICE_KEY | base64 --decode > ${HOME}/gcloud-service-key.json
       gcloud --quiet config set project ${GOOGLE_PROJECT_ID}
       gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
-
-  - &default_steps
-    - checkout
-    - *attach_workspace
-
-  - &test_steps
-    - *default_steps
-    - *gcloud_login
-    - ./scripts/ci-tests.sh
+      ./scripts/ci-tests.sh
   
 version: 2
 workflows:
@@ -43,7 +34,8 @@ jobs:
   "Build":
     <<: *environment
     steps:
-      - *default_steps
+      - checkout
+      - *attach_workspace
       - restore_cache:
           keys: 
             - jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}-{{ checksum  "Backpack/build.gradle" }}
@@ -95,9 +87,18 @@ jobs:
       #       sudo gsutil -m cp -r -U `sudo gsutil ls gs://[BUCKET_NAME]/[OBJECT_NAME] | tail -1` ${CIRCLE_ARTIFACTS}/ | true
   "Instrumented tests":
     environment:
+      <<: *environment
       TEST_METHOD: connected
-    steps: *test_steps
+    steps:
+      - checkout
+      - *attach_workspace
+      - run: *gcloud_tests
+
   "Screenshot tests":
     environment:
+      <<: *environment
       TEST_METHOD: screenshot
-    steps: *test_steps
+    steps:
+      - checkout
+      - *attach_workspace
+      - run: *gcloud_tests
