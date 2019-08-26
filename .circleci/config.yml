@@ -34,10 +34,10 @@ workflows:
   master:
     jobs:
       - "Build"
-      - "Instrumented tests"
-        requires: "Build"
-      - "Screenshot tests"
-        requires: "Build"
+      - "Instrumented tests":
+          requires: "Build"
+      - "Screenshot tests":
+          requires: "Build"
 
 jobs:
   "Build":
@@ -93,11 +93,11 @@ jobs:
       #     command: |
       #       sudo pip install -U crcmod
       #       sudo gsutil -m cp -r -U `sudo gsutil ls gs://[BUCKET_NAME]/[OBJECT_NAME] | tail -1` ${CIRCLE_ARTIFACTS}/ | true
-  "Instrumented tests"
+  "Instrumented tests":
     environment:
       TEST_METHOD: connected
     steps: *test_steps
-  "Screenshot tests"
+  "Screenshot tests":
     environment:
       TEST_METHOD: screenshot
     steps: *test_steps
