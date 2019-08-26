@@ -75,10 +75,8 @@ jobs:
             - node_modules
 
       - run:
-          name: Build debug APK and release APK
-          command: |
-            npm run build
-            ./gradlew :app:assembleDebug :app:assembleDebugAndroidTest :Backpack:assembleDebugAndroidTest check -PdisablePreDex
+          name: Lint
+          command: ./gradlew check -PdisablePreDex
   
       # - run:
       #     name: Install gsutil dependency and copy test results data
@@ -92,6 +90,11 @@ jobs:
     steps:
       - checkout
       - *attach_workspace
+      - run:
+        name: "Build test apk"
+        command: |
+          npm run build
+          ./gradlew :app:assembleDebug :Backpack:assembleDebugAndroidTest -PdisablePreDex
       - run: *gcloud_tests
 
   "Screenshot tests":
@@ -101,4 +104,9 @@ jobs:
     steps:
       - checkout
       - *attach_workspace
+      - run: 
+        name: "Build test apk"
+        command: |
+          npm run build
+          ./gradlew :app:assembleDebug :app:assembleDebugAndroidTest -PdisablePreDex
       - run: *gcloud_tests
