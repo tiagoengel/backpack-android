@@ -1,13 +1,49 @@
-version: 2
-jobs:
-  build:
+aliases:
+  - &environment
     working_directory: ~/code
     docker:
       - image: circleci/android:api-28  # gcloud is baked into this image
     environment:
       JVM_OPTS: -Xmx3200m
+
+      
+  - &attach_workspace
+    attach_workspace:
+      at: ~/code
+
+  - &gcloud_login
+    name: Gcloud login
+    command: |
+      echo $GCLOUD_SERVICE_KEY | base64 --decode > ${HOME}/gcloud-service-key.json
+      gcloud --quiet config set project ${GOOGLE_PROJECT_ID}
+      gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
+
+  - &default_steps
+    - checkout
+    - *attach_workspace
+
+  - &test_steps
+    - *default_steps
+    - *gcloud_login
+    - ./scripts/ci-tests.sh
+  
+version: 2
+
+workflows:
+  version: 2
+  master:
+    jobs:
+      - "Build"
+      - "Instrumented tests"
+        requires: "Build"
+      - "Screenshot tests"
+        requires: "Build"
+
+jobs:
+  "Build":
+    <<: *environment
     steps:
-      - checkout
+      - *default_steps
       - restore_cache:
           keys: 
             - jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}-{{ checksum  "Backpack/build.gradle" }}
@@ -51,20 +87,17 @@ jobs:
           command: |
             npm run build
             ./gradlew :app:assembleDebug :app:assembleDebugAndroidTest :Backpack:assembleDebugAndroidTest check -PdisablePreDex
-
-      - run:
-          name: Store Google Service Account
-          command: echo $GCLOUD_SERVICE_KEY | base64 --decode > ${HOME}/gcloud-service-key.json
-
-      - run:
-          name: Test with Firebase Test Lab
-          command: |
-            gcloud --quiet config set project ${GOOGLE_PROJECT_ID}
-            gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
-            TEST_METHOD=connected ./scripts/ci-tests.sh
-            TEST_METHOD=screenshot ./scripts/ci-tests.sh
+  
       # - run:
       #     name: Install gsutil dependency and copy test results data
       #     command: |
       #       sudo pip install -U crcmod
       #       sudo gsutil -m cp -r -U `sudo gsutil ls gs://[BUCKET_NAME]/[OBJECT_NAME] | tail -1` ${CIRCLE_ARTIFACTS}/ | true
+  "Instrumented tests"
+    environment:
+      TEST_METHOD: connected
+    steps: *test_steps
+  "Screenshot tests"
+    environment:
+      TEST_METHOD: screenshot
+    steps: *test_steps
