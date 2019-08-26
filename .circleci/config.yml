@@ -91,10 +91,10 @@ jobs:
       - checkout
       - *attach_workspace
       - run:
-        name: "Build test apk"
-        command: |
-          npm run build
-          ./gradlew :app:assembleDebug :Backpack:assembleDebugAndroidTest -PdisablePreDex
+          name: "Build test apk"
+          command: |
+            npm run build
+            ./gradlew :app:assembleDebug :Backpack:assembleDebugAndroidTest -PdisablePreDex
       - run: *gcloud_tests
 
   "Screenshot tests":
@@ -105,8 +105,8 @@ jobs:
       - checkout
       - *attach_workspace
       - run: 
-        name: "Build test apk"
-        command: |
-          npm run build
-          ./gradlew :app:assembleDebug :app:assembleDebugAndroidTest -PdisablePreDex
+          name: "Build test apk"
+          command: |
+            npm run build
+            ./gradlew :app:assembleDebug :app:assembleDebugAndroidTest -PdisablePreDex
       - run: *gcloud_tests
