@@ -28,17 +28,17 @@ aliases:
     - ./scripts/ci-tests.sh
   
 version: 2
-
 workflows:
   version: 2
   master:
     jobs:
       - "Build"
       - "Instrumented tests":
-          requires: "Build"
+          requires: 
+            - "Build"
       - "Screenshot tests":
-          requires: "Build"
-
+          requires: 
+            - "Build"
 jobs:
   "Build":
     <<: *environment
