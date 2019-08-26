@@ -9,8 +9,9 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}-{{ checksum  "Backpack/build.gradle" }}
-          key: node-{{ checksum "package-lock.json" }}
+          keys: 
+            - jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}-{{ checksum  "Backpack/build.gradle" }}
+            - node-{{ checksum "package-lock.json" }}
 
       - run:
         name: Install tools
@@ -30,6 +31,7 @@ jobs:
           key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}-{{ checksum  "Backpack/build.gradle" }}
           paths:
             - ~/.gradle
+            
       - save_cache:
           key: node-{{ checksum "package-lock.json" }}
           paths:
@@ -50,7 +52,7 @@ jobs:
           command: |
             sudo gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
             sudo gcloud --quiet config set project ${GOOGLE_PROJECT_ID}
-            
+
       - run:
           name: Test with Firebase Test Lab
           command: |
