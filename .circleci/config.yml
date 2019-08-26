@@ -9,27 +9,48 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}      
+          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}-{{ checksum  "Backpack/build.gradle" }}
+          key: node-{{ checksum "package-lock.json" }}
+
+      - run:
+        name: Install tools
+        command: |
+          curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.34.0/install.sh | bash
+          nvm install
+          nvm use
+          npm install -g greenkeeper-lockfile
+
       - run:
           name: Download Dependencies
-          command: ./gradlew androidDependencies
+          command: |
+            ./gradlew androidDependencies
+            npm install
+
       - save_cache:
+          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}-{{ checksum  "Backpack/build.gradle" }}
           paths:
             - ~/.gradle
-          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
+      - save_cache:
+          key: node-{{ checksum "package-lock.json" }}
+          paths:
+            - node_modules
+
       - run:
           name: Build debug APK and release APK
           command: |
             npm run build
             ./gradlew :app:assembleDebug :app:assembleDebugAndroidTest :Backpack:assembleDebugAndroidTest check -PdisablePreDex
+
       - run:
           name: Store Google Service Account
           command: echo $GCLOUD_SERVICE_KEY | base64 --decode > ${HOME}/gcloud-service-key.json
+
       - run:
           name: Authorize gcloud and set config defaults
           command: |
             sudo gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
             sudo gcloud --quiet config set project ${GOOGLE_PROJECT_ID}
+            
       - run:
           name: Test with Firebase Test Lab
           command: |
