@@ -47,7 +47,7 @@ elif [ "$TEST_METHOD" == "connected" ]; then
       --results-dir="$dir_name"
 
   local_screenshots_folder="app/build/test-results/test-labs-connected"
-  remote_xml_report=""$bucket_name"/"$dir_name"/Nexus4-21-en-portrait/test_results_1.xml"
+  remote_xml_report=""$bucket_name"/"$dir_name"/Nexus4-21-en-portrait/test_result_1.xml"
 
   if [ -d "$local_screenshots_folder" ]; then
     rm -rf "$local_screenshots_folder"
