@@ -31,7 +31,7 @@ if [ "$TEST_METHOD" == "screenshot" ]; then
   mkdir -p "$local_screenshots_folder"
 
   gsutil -m cp -r "gs://$remote_screenshots_folder" "$local_screenshots_folder"
-  gsutil -m cp -r "gs://$remote_xml_report" "$local_screenshots_folder"
+  # gsutil -m cp -r "gs://$remote_xml_report" "$local_screenshots_folder"
 
   echo "Verifying screenshots..."
 
@@ -43,7 +43,7 @@ elif [ "$TEST_METHOD" == "connected" ]; then
       --type instrumentation \
       --app ./app/build/outputs/apk/debug/app-debug.apk \
       --test ./Backpack/build/outputs/apk/androidTest/debug/Backpack-debug-androidTest.apk \
-      --device model=Nexus4,version=21
+      --device model=Nexus4,version=21 \
       --results-dir="$dir_name"
 
   local_screenshots_folder="app/build/test-results/test-labs-connected"
