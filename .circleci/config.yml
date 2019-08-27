@@ -20,7 +20,7 @@ aliases:
 
   - &save_build_cache
     save_cache:
-      key: build-{{ checksum ".Revision" }}
+      key: build-cache
       paths:
         - ./app/build/outputs/apk/debug/app-debug.apk
         - ./app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk
@@ -28,7 +28,7 @@ aliases:
   
   - &restore_build_cache
     restore_cache:
-      keys: build-{{ checksum ".Revision" }}
+      keys: build-cache
   
 version: 2
 workflows:
