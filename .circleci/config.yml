@@ -67,9 +67,6 @@ jobs:
             nvm use
             npm install -g greenkeeper-lockfile
 
-            # Required for screenshot testing
-            pip install Pillow
-
       - run:
           name: Download Dependencies
           command: |
@@ -119,4 +116,7 @@ jobs:
       - checkout
       - *attach_workspace
       - *restore_build_cache
+      - run:
+          name: Install screenshot dependencies
+          command: pip install Pillow
       - run: *gcloud_tests
