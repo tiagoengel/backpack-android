@@ -128,4 +128,4 @@ jobs:
       - run:
           name: Store artifacts
           command: |
-            cp -r ./app/build/test-labs-screenshots/screenshots-default ${CIRCLE_ARTIFACTS}/
+            sudo cp -r ./app/build/test-labs-screenshots/screenshots-default ${CIRCLE_ARTIFACTS}/
