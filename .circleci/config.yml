@@ -17,6 +17,18 @@ aliases:
       gcloud --quiet config set project ${GOOGLE_PROJECT_ID}
       gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
       ./scripts/ci-tests.sh
+
+  - &save_build_cache
+    - save_cache:
+        key: build-{{ checksum ".Revision" }}
+        paths:
+          - ./app/build/outputs/apk/debug/app-debug.apk
+          - ./app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk
+          - ./Backpack/build/outputs/apk/androidTest/debug/Backpack-debug-androidTest.apk
+  
+  - &restore_build_cache
+    - restore_cache:
+        keys: build-{{ checksum ".Revision" }}
   
 version: 2
 workflows:
@@ -75,8 +87,14 @@ jobs:
             - node_modules
 
       - run:
-          name: Lint
-          command: ./gradlew check -PdisablePreDex
+          name: Lint and build
+          command: |
+            set -e
+            npm run build
+            ./scripts/check-pristine-state package-lock.json sd.img
+            ./gradlew :app:assembleDebug :app:assembleDebugAndroidTest :Backpack:assembleDebugAndroidTest check -PdisablePreDex
+
+      - *save_build_cache
   
       # - run:
       #     name: Install gsutil dependency and copy test results data
@@ -90,11 +108,7 @@ jobs:
     steps:
       - checkout
       - *attach_workspace
-      - run:
-          name: "Build test apk"
-          command: |
-            # npm run build  Is this needed?
-            ./gradlew :app:assembleDebug :Backpack:assembleDebugAndroidTest -PdisablePreDex
+      - *restore_build_cache
       - run: *gcloud_tests
 
   "Screenshot tests":
@@ -104,10 +118,5 @@ jobs:
     steps:
       - checkout
       - *attach_workspace
-      - run: 
-          name: "Build test apk"
-          command: |
-            # npm run build Is this needed?
-            pip install Pillow
-            ./gradlew :app:assembleDebug :app:assembleDebugAndroidTest -PdisablePreDex
+      - *restore_build_cache
       - run: *gcloud_tests
