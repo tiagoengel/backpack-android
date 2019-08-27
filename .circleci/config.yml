@@ -125,3 +125,7 @@ jobs:
           name: Install screenshot dependencies
           command: pip install Pillow
       - run: *gcloud_tests
+      - run:
+          name: Store artifacts
+          command: |
+            cp -r ./app/build/test-labs-screenshots/screenshots-default ${CIRCLE_ARTIFACTS}/
