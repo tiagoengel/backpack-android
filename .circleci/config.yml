@@ -19,16 +19,16 @@ aliases:
       ./scripts/ci-tests.sh
 
   - &save_build_cache
-    - save_cache:
-        key: build-{{ checksum ".Revision" }}
-        paths:
-          - ./app/build/outputs/apk/debug/app-debug.apk
-          - ./app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk
-          - ./Backpack/build/outputs/apk/androidTest/debug/Backpack-debug-androidTest.apk
+    save_cache:
+      key: build-{{ checksum ".Revision" }}
+      paths:
+        - ./app/build/outputs/apk/debug/app-debug.apk
+        - ./app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk
+        - ./Backpack/build/outputs/apk/androidTest/debug/Backpack-debug-androidTest.apk
   
   - &restore_build_cache
-    - restore_cache:
-        keys: build-{{ checksum ".Revision" }}
+    restore_cache:
+      keys: build-{{ checksum ".Revision" }}
   
 version: 2
 workflows:
