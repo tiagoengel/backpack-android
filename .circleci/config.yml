@@ -105,11 +105,14 @@ jobs:
     <<: *environment
     environment:
       TEST_METHOD: connected
+
     steps:
       - checkout
       - *attach_workspace
       - *restore_cache
       - *restore_build_cache
+      - store_test_results:
+          path: app/build/test-results
       - run: *gcloud_tests
 
   "Screenshot tests":
@@ -121,11 +124,9 @@ jobs:
       - *attach_workspace
       - *restore_cache
       - *restore_build_cache
+      - store_test_results:
+          path: app/build/test-results
       - run:
           name: Install screenshot dependencies
           command: pip install Pillow
       - run: *gcloud_tests
-      - run:
-          name: Store artifacts
-          command: |
-            sudo cp -r ./app/build/test-labs-screenshots/screenshots-default ${CIRCLE_ARTIFACTS}/
