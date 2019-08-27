@@ -111,9 +111,9 @@ jobs:
       - *attach_workspace
       - *restore_cache
       - *restore_build_cache
+      - run: *gcloud_tests
       - store_test_results:
           path: app/build/test-results
-      - run: *gcloud_tests
 
   "Screenshot tests":
     <<: *environment
@@ -124,8 +124,6 @@ jobs:
       - *attach_workspace
       - *restore_cache
       - *restore_build_cache
-      - store_test_results:
-          path: app/build/test-results
       - run:
           name: Install screenshot dependencies
           command: pip install Pillow
