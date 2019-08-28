@@ -48,6 +48,7 @@ elif [ "$TEST_METHOD" == "connected" ]; then
 
   local_screenshots_folder="app/build/test-results/connected/test-labs"
   remote_xml_report=""$bucket_name"/"$dir_name"/Nexus4-21-en-portrait/test_result_1.xml"
+  remote_xml_metadata=""$bucket_name"/"$dir_name"/Nexus4-21-en-portrait/artifacts/metadata.xml"
 
   if [ -d "$local_screenshots_folder" ]; then
     rm -rf "$local_screenshots_folder"
@@ -56,6 +57,7 @@ elif [ "$TEST_METHOD" == "connected" ]; then
   mkdir -p "$local_screenshots_folder"
 
   gsutil -m cp -r "gs://$remote_xml_report" "$local_screenshots_folder"
+  gsutil -m cp -r "gs://$remote_xml_metadata" "$local_screenshots_folder"
 else 
 
   echo "Env TEST_METHOD not defined"
