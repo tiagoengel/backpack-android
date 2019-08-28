@@ -113,7 +113,7 @@ jobs:
       - *restore_build_cache
       - run: *gcloud_tests
       - store_test_results:
-          path: app/build/test-results/test-labs-connected
+          path: app/build/test-results/
       - store_artifacts:
           path: app/build/test-results/test-labs-connected
 
@@ -131,6 +131,6 @@ jobs:
           command: pip install Pillow
       - run: *gcloud_tests
       - store_test_results:
-          path: app/build/test-results/test-labs-screenshots
+          path: app/build/test-results/
       - store_artifacts:
           path: app/build/test-results/test-labs-screenshots
