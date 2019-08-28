@@ -9,7 +9,7 @@ dir_name=""$date_str".$$"
 if [ "$TEST_METHOD" == "screenshot" ]; then
 
   remote_screenshots_folder=""$bucket_name"/"$dir_name"/Nexus4-21-en-portrait/artifacts/sdcard/screenshots/net.skyscanner.backpack.test/screenshots-default"
-  local_screenshots_folder="app/build/test-results/test-labs-screenshots"
+  local_screenshots_folder="app/build/test-results/screenshots/test-labs"
 
   gcloud firebase test android run \
       --type instrumentation \
@@ -46,7 +46,7 @@ elif [ "$TEST_METHOD" == "connected" ]; then
       --device model=Nexus4,version=21 \
       --results-dir="$dir_name"
 
-  local_screenshots_folder="app/build/test-results/test-labs-connected"
+  local_screenshots_folder="app/build/test-results/connected/test-labs"
   remote_xml_report=""$bucket_name"/"$dir_name"/Nexus4-21-en-portrait/test_result_1.xml"
 
   if [ -d "$local_screenshots_folder" ]; then
