@@ -20,7 +20,7 @@ if [ "$TEST_METHOD" == "screenshot" ]; then
 
 
   remote_screenshots_folder=""$bucket_name"/"$dir_name"/Nexus4-21-en-portrait/artifacts/sdcard/screenshots/net.skyscanner.backpack.test/screenshots-default"
-  # remote_xml_report=""$bucket_name"/"$dir_name"/Nexus4-21-en-portrait/test_results_1.xml"
+  remote_xml_report=""$bucket_name"/"$dir_name"/Nexus4-21-en-portrait/test_result_1.xml"
 
   echo "Retrieving screenshots from temporary bucket [$remote_screenshots_folder]"
 
@@ -31,7 +31,7 @@ if [ "$TEST_METHOD" == "screenshot" ]; then
   mkdir -p "$local_screenshots_folder"
 
   gsutil -m cp -r "gs://$remote_screenshots_folder" "$local_screenshots_folder"
-  # gsutil -m cp -r "gs://$remote_xml_report" "$local_screenshots_folder"
+  gsutil -m cp -r "gs://$remote_xml_report" "$local_screenshots_folder"
 
   echo "Verifying screenshots..."
 
